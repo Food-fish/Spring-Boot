@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mybatis.many.mapper.UserMapper" >
+    <insert id="insert" parameterType="User">
+        <selectKey resultType="java.lang.Integer" keyProperty="UUID" keyColumn="UUID">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO USER(
+          ID,UUID,UID_A,UID_B,UID_C,PASSWORD,NICKNAME,EMAIL,IMG,STATUS,CREATEBY,CREATEDATE,UPDATEBY,UPDATEDATE,DELFLAG
+        )VALUES(
+          #{id},#{uuid},#{uid_a},#{uid_b},#{uid_c},#{password},#{nickName},#{email},#{img},#{status},#{createBy},#{createDate},#{updateBy},#{updateDate},#{delFlag}
+        )
+    </insert>
+    <select id="getAll" resultType="User">
+        SELECT
+          ID AS "id",UUID AS "uuid",UID_A AS "uid_a",UID_B AS "uid_b",UID_C AS "uid_c",PASSWORD AS "password",
+          NICKNAME AS "nickName",EMAIL AS "email",IMG AS "img",STATUS AS "status",CREATEBY AS "createBy",CREATEDATE AS "createDate",
+          UPDATEBY AS "updateBy",UPDATEDATE AS "updateDate",DELFLAG AS "delFlag"
+        FROM USER
+    </select>
+</mapper>
