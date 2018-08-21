@@ -32,8 +32,8 @@ import java.util.regex.Matcher;
                 @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
                 @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
         })
-public class SqlPrintInterceptor implements Interceptor {
-    private static Log logger = LogFactory.getLog(SqlPrintInterceptor.class);
+public class SqlPrintInterceptorUtil implements Interceptor {
+    private static Log logger = LogFactory.getLog(SqlPrintInterceptorUtil.class);
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override

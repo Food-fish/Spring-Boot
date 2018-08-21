@@ -6,24 +6,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mybatis.many.entity.User;
-import com.mybatis.many.service.UserService;
+import com.mybatis.many.service.cluster.UserClusterService;
+import com.mybatis.many.service.master.UserMasterService;
 
 import java.util.List;
 
 @Controller
 public class SysController {
     @Autowired
-    private UserService userService;
+    private UserMasterService userMasterService;
+    
+    @Autowired
+    private UserClusterService userClusterService;
 
     @ResponseBody
     @RequestMapping(value="/getAllUser")
     public List<User> getAllUser(Integer page, Integer rows) {
-        return userService.getAllUser();
+        return userMasterService.getAllUser();
     }
     
     @ResponseBody
     @RequestMapping(value="/getAll")
     public List<User> getAll(Integer page, Integer rows) {
-    	return userService.getAll();
+    	return userClusterService.getAll();
     }
 }

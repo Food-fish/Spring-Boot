@@ -1,23 +1,21 @@
-package com.mybatis.many.service;
+package com.mybatis.many.service.master;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mybatis.many.annotation.TargetDataSource;
 import com.mybatis.many.entity.User;
-import com.mybatis.many.mapper.UserMapper;
+import com.mybatis.many.mapper.master.UserMasterMapper;
 
 import java.util.List;
 
-@Service
-public class UserService {
+@Service("UserMasterService")
+public class UserMasterService {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserMasterMapper userMapper;
 
     @Transactional
-    @TargetDataSource(dataSource = "DataSource")
     public boolean createUser(User user) {
         userMapper.insert(user);
         return true;
@@ -28,7 +26,6 @@ public class UserService {
     }
     
     @Transactional
-    @TargetDataSource(dataSource = "DataSourceDs1")
     public List<User> getAll() {
         return userMapper.getAll();
     }

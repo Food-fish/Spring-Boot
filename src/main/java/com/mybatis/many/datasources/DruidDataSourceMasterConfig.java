@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.mybatis.many.util.SqlPrintInterceptorUtil;
 
 /**
  * @author JinTao
@@ -28,19 +29,19 @@ import com.alibaba.druid.pool.DruidDataSource;
  * 类说明
  */
 @Configuration
-@MapperScan(basePackages = {"com.mybatis.many.mapper"},sqlSessionFactoryRef = "SqlSessionFactoryDs1")
-public class DruidDataSourceDs1Config {
+@MapperScan(basePackages = {"com.mybatis.many.mapper.master"},sqlSessionFactoryRef = "SqlSessionFactory")
+public class DruidDataSourceMasterConfig {
 	
-	private Logger logger = LoggerFactory.getLogger(DruidDataSourceDs1Config.class);
-    @Value("${spring.datasource.ds1.url}")
+	private Logger logger = LoggerFactory.getLogger(DruidDataSourceMasterConfig.class);
+    @Value("${spring.datasource.master.url}")
     private String dbUrl;
-    @Value("${spring.datasource.type}")
+    @Value("${spring.datasource.master.type}")
     private String dbType;
-    @Value("${spring.datasource.ds1.username}")
+    @Value("${spring.datasource.master.username}")
     private String username;
-    @Value("${spring.datasource.ds1.password}")
+    @Value("${spring.datasource.master.password}")
     private String password;
-    @Value("${spring.datasource.ds1.driverClassName}")
+    @Value("${spring.datasource.master.driverClassName}")
     private String driverClassName;
     @Value("${spring.datasource.initialSize}")
     private int initialSize;
@@ -70,18 +71,22 @@ public class DruidDataSourceDs1Config {
     private String filters;
     @Value("${spring.datasource.connectionProperties}")
     private String connectionProperties;
-    @Value("${spring.datasource.MapperLocations}")
+    @Value("${spring.datasource.master.MapperLocations}")
     private String userMapperLocations;
     @Value("${spring.datasource.userGlobalDataSourceStat}")
     private boolean useGlobalDataSourceStat;
+    @Value("${spring.datasource.druidLoginName}")
+    private String druidLoginName;
+    @Value("${spring.datasource.druidPassword}")
+    private String druidPassword;
     @Value("${spring.datasource.TypeAliasesPackage}")
     private String typeAliasesPackage;
     @Value("${spring.datasource.configLocation}")
     private String configLocation;
     
-    @Order(1)
-	@Bean(name = "DataSourceDs1")
-    public DataSource dataSourceDs1() {
+	@Bean(name = "DataSource")
+	@Primary
+    public DataSource dataSource() {
 		DruidDataSource datasource = new DruidDataSource();
         datasource.setUrl(this.dbUrl);
         //datasource.setDbType(dbType);
@@ -111,8 +116,9 @@ public class DruidDataSourceDs1Config {
         datasource.setConnectionProperties(connectionProperties);
         return datasource;
     }
-	@Bean(name = "SqlSessionFactoryDs1")
-    public SqlSessionFactory SqlSessionFactoryDs1(@Qualifier("DataSourceDs1") DataSource dataSource) throws Exception {
+	@Bean(name = "SqlSessionFactory")
+    @Primary
+    public SqlSessionFactory SqlSessionFactory(@Qualifier("DataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setTypeAliasesPackage(typeAliasesPackage);
@@ -122,8 +128,9 @@ public class DruidDataSourceDs1Config {
         return sqlSessionFactoryBean.getObject();
     }
 	
-	@Bean(name = "SqlSessionTemplateDs1")
-    public SqlSessionTemplate SqlSessionTemplateDs1(@Qualifier("SqlSessionFactoryDs1")SqlSessionFactory SqlSessionFactory) {
+	@Bean(name = "SqlSessionTemplate")
+	@Primary
+    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("SqlSessionFactory")SqlSessionFactory SqlSessionFactory) {
         return new SqlSessionTemplate(SqlSessionFactory);
     }
 	
@@ -132,10 +139,17 @@ public class DruidDataSourceDs1Config {
      *
      * @return
      */
-    @Bean(name = "TransactionManagerDs1")
-    public DataSourceTransactionManager TransactionManagerDs1(@Qualifier("DataSourceDs1") DataSource dataSource) {
+    @Bean(name = "TransactionManager")
+    @Primary
+    public DataSourceTransactionManager TransactionManager(@Qualifier("DataSource") DataSource dataSource) {
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
         dataSourceTransactionManager.setDataSource(dataSource);
         return dataSourceTransactionManager;
+    }
+    
+    //将要执行的sql进行日志打印(不想拦截，就把这方法注释掉)
+    @Bean
+    public SqlPrintInterceptorUtil sqlPrintInterceptor(){
+        return new SqlPrintInterceptorUtil();
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyDruidStatInterceptor {
 
-    private static final String[] patterns = new String[]{"com.mybatis.many.service.*"};
+    private static final String[] patterns = new String[]{"com.mybatis.many.service.master.*","com.mybatis.many.service.cluster.*"};
 
     @Bean
     public DruidStatInterceptor druidStatInterceptor() {

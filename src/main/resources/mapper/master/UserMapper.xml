@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.mybatis.many.mapper.UserMapper" >
+<mapper namespace="com.mybatis.many.mapper.master.UserMasterMapper" >
     <insert id="insert" parameterType="User">
         <selectKey resultType="java.lang.Integer" keyProperty="UUID" keyColumn="UUID">
             SELECT LAST_INSERT_ID()
